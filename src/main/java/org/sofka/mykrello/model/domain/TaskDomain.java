@@ -1,32 +1,30 @@
 package org.sofka.mykrello.model.domain;
 
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
 import javax.persistence.*;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Data;
-import lombok.Value;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@Entity
-@Table(name = "krl_task")
+
+@Entity /**/ @Table(name = "krl_task")
+@Getter /**/ @Setter
+
 public class TaskDomain implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
-
 
     @PreUpdate
     public void preUpdate() {
-        if (this.updated == null)
-            this.updated = Instant.now();
+        if (this.updatedT == null)
+            this.updatedT = Instant.now();
     }
 
     @Id
@@ -43,35 +41,24 @@ public class TaskDomain implements Serializable {
     @Column(name = "clm_id_column")
     private Integer column;
 
-    @Column(name = "brd_id_board")
+    @Column(name ="brd_id_board")
     private Integer board;
-
 
     @Column(name = "tsk_delivery_date")
     private Instant delivery;
 
     @Column(name = "tsk_created_at")
-    private Instant created = Instant.now();
+    private Instant createdT = Instant.now();
 
     @Column(name = "tsk_updated_at")
-    private Instant updated;
+    private Instant updatedT;
 
-
-    /**
-     * Aqui estamos haciendo una relacion de 1 a muchos,
-     * esto es porque una tarea tiene muchos logs,
-     * @return una lista de logs
-     */
     @JsonManagedReference(value = "log-task")
     @OneToMany(mappedBy = "task", fetch = FetchType.LAZY, targetEntity = LogDomain.class, cascade = CascadeType.ALL)
     private List<LogDomain> logs = new ArrayList<>();
 
+    // Relaciones
 
-    /**
-     * Aqui estamos haciendo una relacion de 1 a muchos,
-     * esto es porque una tarea tiene muchos logs,
-     * @return
-     */
     @JoinColumn(name = "clm_id_column", insertable = false, updatable = false)
     @JsonBackReference(value = "column-tasks")
     @ManyToOne(fetch = FetchType.LAZY)

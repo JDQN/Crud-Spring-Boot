@@ -1,5 +1,6 @@
 package org.sofka.mykrello.model.domain;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 
@@ -17,12 +18,15 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+//@Data
+@Getter  @Setter
 @Entity
 @Table(name = "krl_log")
 public class LogDomain implements Serializable {
-
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
